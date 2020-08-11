@@ -13,7 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,7 +29,7 @@ public class HttpClientTest {
     private Response response = mock(Response.class);
 
     @Before
-    public void setup() throws ExecutionException, InterruptedException {
+    public void setup() {
         when(future.toCompletableFuture()).thenReturn(cf);
         cf.complete(response);
     }
