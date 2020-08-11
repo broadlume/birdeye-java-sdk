@@ -1,0 +1,38 @@
+name: master build
+on:
+  push:
+    branches: master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Restore cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build and test
+        run: ./mvnw install --batch-mode
+      - name: Upload test coverage
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
+          GIT_COMMIT_SHA: ${{ github.sha }}
+          GIT_BRANCH: master
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter before-build
+          for f in */target/site/jacoco/jacoco.xml
+          do
+            PROJECT=${f%/target/site/jacoco/jacoco.xml}
+            JACOCO_SOURCE_PATH=$PROJECT/src/main/java ./cc-test-reporter format-coverage -t jacoco -o target/coverage/codeclimate-$PROJECT.json $f
+          done
+          ./cc-test-reporter sum-coverage target/coverage/codeclimate-*.json -o target/coverage/codeclimate-total.json
+          ./cc-test-reporter upload-coverage -i target/coverage/codeclimate-total.json
