@@ -1,4 +1,4 @@
-package com.broadlume.birdeye.exception;
+package com.broadlume.birdeye.v1.exception;
 
 import com.broadlume.birdeye.v1.model.ErrorResponse;
 
