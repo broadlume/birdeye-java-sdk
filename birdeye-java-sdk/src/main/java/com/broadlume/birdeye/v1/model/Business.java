@@ -17,7 +17,9 @@ import java.util.List;
 @JsonDeserialize(builder = Business.BusinessBuilder.class)
 public class Business {
 
-    // TODO figure out which ones are actually in the API since the docs and actual requests/responses don't match
+    // TODO
+    // figure out which ones are actually in the API since the docs and actual requests/responses don't match
+    // figure out what is actually nullable
     @Nonnull
     String name;
     @Nonnull
