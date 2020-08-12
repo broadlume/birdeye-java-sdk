@@ -1,5 +1,6 @@
 package com.broadlume.birdeye.v1.model;
 
+import com.broadlume.birdeye.internal.utils.EnumUtils;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -26,15 +27,6 @@ public enum AggregationOption {
 
     @JsonCreator
     public static AggregationOption fromValue(int value) {
-        AggregationOption option = null;
-        for (AggregationOption a : AggregationOption.values()) {
-            if (a.value == value) {
-                option = a;
-                break;
-            }
-        }
-        if (option == null)
-            throw new IllegalArgumentException("Unexpected AggregationOption value " + value);
-        return option;
+        return EnumUtils.enumFromValue(value, a -> a.getValue(), AggregationOption.values());
     }
 }

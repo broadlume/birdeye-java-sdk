@@ -1,5 +1,6 @@
 package com.broadlume.birdeye.v1.model;
 
+import com.broadlume.birdeye.internal.utils.EnumUtils;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -26,15 +27,6 @@ public enum Day {
 
     @JsonCreator
     public static Day fromValue(int value) {
-        Day day = null;
-        for (Day d : Day.values()) {
-            if (d.value == value) {
-                day = d;
-                break;
-            }
-        }
-        if (day == null)
-            throw new IllegalArgumentException("Unexpected Day value " + value);
-        return day;
+        return EnumUtils.enumFromValue(value, a -> a.getValue(), Day.values());
     }
 }
