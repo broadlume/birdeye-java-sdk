@@ -29,9 +29,52 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <name>BirdEye Java SDK parent</name>
+    <description>Parent of the BirdEye Java SDK</description>
+    <url>https://github.com/adHawk/birdeye-java-sdk</url>
+
     <modules>
         <module>birdeye-java-sdk</module>
     </modules>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Alex Daidone</name>
+            <email>alex.daidone@broadlume.com</email>
+            <organization>Broadlume</organization>
+            <organizationUrl>https://www.broadlume.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>Cory Wilbur</name>
+            <email>cory.wilbur@broadlume.com</email>
+            <organization>Broadlume</organization>
+            <organizationUrl>https://www.broadlume.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/adHawk/birdeye-java-sdk.git</connection>
+        <developerConnection>scm:git:ssh://github.com:adHawk/birdeye-java-sdk.git</developerConnection>
+        <url>http://github.com/adHawk/birdeye-java-sdk</url>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -121,6 +164,16 @@
                     <artifactId>spotbugs-maven-plugin</artifactId>
                     <version>4.0.4</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9.1</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -152,6 +205,30 @@
                             <goal>check</goal>
                         </goals>
                         <phase>verify</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

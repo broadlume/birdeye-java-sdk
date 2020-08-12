@@ -32,6 +32,9 @@
 
     <artifactId>birdeye-java-sdk</artifactId>
 
+    <name>BirdEye Java SDK</name>
+    <description>Java SDK for BirdEye</description>
+
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
