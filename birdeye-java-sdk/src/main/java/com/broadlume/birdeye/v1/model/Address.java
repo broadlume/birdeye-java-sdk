@@ -34,19 +34,19 @@ import javax.annotation.Nullable;
 @JsonDeserialize(builder = Address.AddressBuilder.class)
 public class Address {
 
-    @Nonnull
+    @Nullable
     String address1;
     @Nullable
     String address2;
-    @Nonnull
+    @Nullable
     String city;
-    @Nonnull
+    @Nullable
     String state;
-    @Nonnull
+    @Nullable
     String zip;
     @Nonnull
     String countryCode;
-    @Nonnull
+    @Nullable
     String countryName;
     // these use a weird format
     // "latitude": 3876198440, "longitude": -10807343550 corresponds to 38.7619844,-108.0734355
