@@ -20,8 +20,12 @@
 package com.broadlume.birdeye.v1;
 
 import com.broadlume.birdeye.internal.http.HttpClient;
+import com.broadlume.birdeye.v1.model.AggregationOption;
 import com.broadlume.birdeye.v1.model.Business;
+import com.broadlume.birdeye.v1.model.CreateBusinessRequest;
+import com.broadlume.birdeye.v1.model.CreateBusinessResponse;
 import com.broadlume.birdeye.v1.model.SocialProfileUrls;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.observers.TestObserver;
@@ -48,13 +52,37 @@ public class BirdEyeBusinessClientTest {
         TestObserver<Void> probe = TestObserver.create();
         when(httpClient.execute(argThat(arg ->
                         arg != null &&
-                                arg.getUrl().equals("https://test.url/business/1234?api_key=abcd1234") &&
+                                arg.getUrl().equals("https://test.url/v1/business/1234?api_key=abcd1234") &&
                                 arg.getMethod().equals("GET") &&
                                 arg.getHeaders().containsValue("Accept", "application/json", true)),
                 eq(Business.class))).thenReturn(Single.just(b).doOnSubscribe(d -> probe.onSubscribe(d)));
 
         Single.fromPublisher(client.get(1234))
                 .test().await().assertResult(b);
+        probe.assertEmpty();
+    }
+
+    @Test
+    public void createTest() throws InterruptedException, JsonProcessingException {
+        long resellerId = 164972L;
+        CreateBusinessRequest request = CreateBusinessRequest.builder().businessName("test business").zip("28262")
+                .aggregationOptions(AggregationOption.DISABLE).build();
+        CreateBusinessResponse response = new CreateBusinessResponse(1234);
+
+        when(objectMapper.writeValueAsString(request)).thenReturn("test-body");
+        TestObserver<Void> probe = TestObserver.create();
+        when(httpClient.execute(argThat(arg ->
+                        arg != null &&
+                                arg.getUrl().equals("https://test.url/v1/signup/reseller/subaccount?rid=164972&email_id=test%40email.com&api_key=abcd1234") &&
+                                arg.getMethod().equals("POST") &&
+                                arg.getHeaders().containsValue("Accept", "application/json", true) &&
+                                arg.getHeaders().containsValue("Content-Type", "application/json", true) &&
+                                "test-body".equals(arg.getStringData())),
+                eq(CreateBusinessResponse.class)))
+                .thenReturn(Single.just(response).doOnSubscribe(d -> probe.onSubscribe(d)));
+
+        Single.fromPublisher(client.create(resellerId, "test@email.com", request))
+                .test().await().assertResult(response);
         probe.assertEmpty();
     }
 }

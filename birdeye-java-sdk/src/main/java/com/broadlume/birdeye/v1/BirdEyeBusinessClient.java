@@ -21,11 +21,15 @@ package com.broadlume.birdeye.v1;
 
 import com.broadlume.birdeye.internal.http.HttpClient;
 import com.broadlume.birdeye.v1.model.Business;
+import com.broadlume.birdeye.v1.model.CreateBusinessRequest;
+import com.broadlume.birdeye.v1.model.CreateBusinessResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.reactivestreams.Publisher;
 
+import java.io.UncheckedIOException;
 import java.util.Objects;
 
 public class BirdEyeBusinessClient {
@@ -42,8 +46,6 @@ public class BirdEyeBusinessClient {
         this.apiKey = Objects.requireNonNull(apiKey);
     }
 
-    // TODO auto-retry Too Many Requests exceptions
-
     /**
      * Get a business by its ID
      * @param id the business ID
@@ -51,11 +53,40 @@ public class BirdEyeBusinessClient {
      */
     public Publisher<Business> get(long id) {
         Request request = new RequestBuilder("GET")
-                .setUrl(baseUrl + "/business/" + id)
+                .setUrl(baseUrl + "/v1/business/" + id)
                 .addHeader("Accept", "application/json")
                 .addQueryParam("api_key", apiKey)
                 .build();
         return http.execute(request, Business.class)
                 .toFlowable();
+    }
+
+    /**
+     * Create a new business
+     * @param resellerId the reseller ID to create the business under
+     * @param emailId an email address, does not get associated with the business so purpose is unknown
+     * @param createRequest data for the new business
+     * @return a Publisher that emits a single response containing the ID of the created business
+     */
+    public Publisher<CreateBusinessResponse> create(long resellerId, String emailId, CreateBusinessRequest createRequest) {
+        Request request = new RequestBuilder("POST")
+                .setUrl(baseUrl + "/v1/signup/reseller/subaccount")
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .addQueryParam("rid", String.valueOf(resellerId))
+                .addQueryParam("email_id", Objects.requireNonNull(emailId))
+                .addQueryParam("api_key", apiKey)
+                .setBody(writeAsJson(createRequest))
+                .build();
+        return http.execute(request, CreateBusinessResponse.class)
+                .toFlowable();
+    }
+
+    private String writeAsJson(Object obj) {
+        try {
+            return objectMapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            throw new UncheckedIOException("Unable to write body as JSON", e);
+        }
     }
 }
