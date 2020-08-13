@@ -47,7 +47,7 @@ public class SocialProfileUrls {
     String bbbUrl;
     @Nullable
     String instagramUrl;
-    // pinterest is spelled wrong
+    // yes, pinterest is spelled wrong
     @Nullable
     String pintrestUrl;
 
