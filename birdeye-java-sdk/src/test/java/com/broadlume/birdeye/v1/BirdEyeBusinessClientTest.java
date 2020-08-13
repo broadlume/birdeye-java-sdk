@@ -136,4 +136,21 @@ public class BirdEyeBusinessClientTest {
                 .test().await().assertComplete();
         probe.assertEmpty();
     }
+
+    @Test
+    public void deleteTest() throws InterruptedException {
+        Response response = mock(Response.class);
+
+        TestObserver<Void> probe = TestObserver.create();
+        when(httpClient.execute(argThat(arg ->
+                arg != null &&
+                        arg.getUrl().equals("https://test.url/v1/business/789?api_key=abcd1234") &&
+                        arg.getMethod().equals("DELETE") &&
+                        arg.getHeaders().containsValue("Accept", "application/json", true))))
+                .thenReturn(Single.just(response).doOnSubscribe(d -> probe.onSubscribe(d)));
+
+        Completable.fromPublisher(client.delete(789))
+                .test().await().assertComplete();
+        probe.assertEmpty();
+    }
 }

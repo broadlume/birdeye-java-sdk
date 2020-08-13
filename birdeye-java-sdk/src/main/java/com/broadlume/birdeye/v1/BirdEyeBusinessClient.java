@@ -86,7 +86,7 @@ public class BirdEyeBusinessClient {
      * Update an existing business
      * @param id the business ID
      * @param business the business details to set
-     * @return the Publisher that emits a completion signal when done
+     * @return a Publisher that emits a completion signal when done
      */
     public Publisher<Void> update(long id, Business business) {
         // birdeye returns dates like 'Aug 13, 2020' but only accepts dates formatted as yyyy-MM-dd HH:mm:ss
@@ -100,6 +100,21 @@ public class BirdEyeBusinessClient {
                 .addHeader("Accept", "application/json")
                 .addQueryParam("api_key", apiKey)
                 .setBody(writeAsJson(business))
+                .build();
+        return http.execute(request)
+                .ignoreElement().toFlowable();
+    }
+
+    /**
+     * Delete a business by ID
+     * @param id the business ID
+     * @return a Publisher that emits a completion signal when done
+     */
+    public Publisher<Void> delete(long id) {
+        Request request = new RequestBuilder("DELETE")
+                .setUrl(baseUrl + "/v1/business/" + id)
+                .addHeader("Accept", "application/json")
+                .addQueryParam("api_key", apiKey)
                 .build();
         return http.execute(request)
                 .ignoreElement().toFlowable();
