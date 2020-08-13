@@ -36,46 +36,43 @@ import java.util.List;
 @JsonDeserialize(builder = Business.BusinessBuilder.class)
 public class Business {
 
-    // TODO
-    // figure out which ones are actually in the API since the docs and actual requests/responses don't match
-    // figure out what is actually nullable
     @Nonnull
     String name;
-    @Nonnull
+    @Nullable
     String alias;
     @Nullable
     String emailId;
-    @Nonnull
+    @Nullable
     String phone;
     @Nullable
     String fax;
-    @Nonnull
+    @Nullable
     String websiteUrl;
-    @Nonnull
+    @Nullable
     String description;
-    @Nonnull
+    @Nullable
     String keywords;
-    @Nonnull
+    @Nullable
     String services;
-    @Nonnull
+    @Nullable
     String logoUrl;
     @Nonnull
     String coverImageUrl;
-    @Nonnull
+    @Nullable
     String image1Url;
-    @Nonnull
+    @Nullable
     String image2Url;
-    @Nonnull
+    @Nullable
     String image3Url;
     @Nullable
     String timezone;
     @Nullable
     String countryCode;
-    @Nonnull @Singular
+    @Nonnull @Singular(ignoreNullCollections = true)
     List<String> languages;
-    @Nonnull
+    @Nullable
     String payment;
-    @Nonnull @Singular
+    @Nonnull @Singular(ignoreNullCollections = true)
     List<HoursOfOperations> hoursOfOperations;
     @Nullable
     String specialHours;
@@ -85,15 +82,15 @@ public class Business {
     String externalReferenceId;
     @Nullable
     String createdDate;
+    // seen values of 0, 1, and 2
     int working24x7;
     @Nonnull
-    String widLabel;
+    String widgetLabel;
     @Nonnull
-    String widBGColor;
-    @Nonnull
+    String widgetBGColor;
+    @Nullable
     Address location;
-    @Nonnull @Singular("categoryItem")
-    List<String> categoryList;
+    // comma-separated list of categories
     @Nullable
     String category;
     @Nonnull
@@ -102,11 +99,11 @@ public class Business {
     Long reviewCount;
     @Nullable
     Float avgRating;
-    @Nullable
+    @Nonnull
     String status;
-    @Nullable
+    @Nonnull
     String type;
-    @Nullable
+    @Nonnull
     String baseUrl;
 
     @JsonPOJOBuilder(withPrefix = "")

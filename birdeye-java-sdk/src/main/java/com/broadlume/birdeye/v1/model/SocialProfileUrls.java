@@ -43,6 +43,13 @@ public class SocialProfileUrls {
     String linkedinUrl;
     @Nullable
     String youtubeUrl;
+    @Nullable
+    String bbbUrl;
+    @Nullable
+    String instagramUrl;
+    // yes, pinterest is spelled wrong
+    @Nullable
+    String pintrestUrl;
 
     @JsonPOJOBuilder(withPrefix = "")
     @JsonIgnoreProperties(ignoreUnknown = true)

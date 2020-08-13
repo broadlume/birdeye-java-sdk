@@ -20,7 +20,6 @@
 package com.broadlume.birdeye.v1;
 
 import com.broadlume.birdeye.internal.http.HttpClient;
-import com.broadlume.birdeye.v1.model.Address;
 import com.broadlume.birdeye.v1.model.Business;
 import com.broadlume.birdeye.v1.model.SocialProfileUrls;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,11 +42,9 @@ public class BirdEyeBusinessClientTest {
     @Test
     public void getTest() throws InterruptedException {
         Business b = Business.builder().name("test").alias("test").phone("1234").websiteUrl("www").description("descr")
-                .keywords("1,2").services("2,1").logoUrl("www").coverImageUrl("www").image1Url("").image2Url("")
-                .image3Url("").language("english").payment("card").isSEOEnabled("false").working24x7(0).widLabel("")
-                .widBGColor("").location(Address.builder().address1("1234 street").city("city").state("state")
-                        .countryCode("US").countryName("US").zip("1234").build())
-                .socialProfileURLs(SocialProfileUrls.builder().build()).build();
+                .keywords("1,2").services("2,1").logoUrl("www").coverImageUrl("www").language("english").payment("card")
+                .isSEOEnabled("false").working24x7(0).widgetLabel("").widgetBGColor("")
+                .socialProfileURLs(SocialProfileUrls.builder().build()).status("demo").type("Business").baseUrl("www").build();
         TestObserver<Void> probe = TestObserver.create();
         when(httpClient.execute(argThat(arg ->
                         arg != null &&
