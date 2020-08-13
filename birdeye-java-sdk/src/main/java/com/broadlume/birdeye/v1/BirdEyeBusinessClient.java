@@ -82,6 +82,29 @@ public class BirdEyeBusinessClient {
                 .toFlowable();
     }
 
+    /**
+     * Update an existing business
+     * @param id the business ID
+     * @param business the business details to set
+     * @return the Publisher that emits a completion signal when done
+     */
+    public Publisher<Void> update(long id, Business business) {
+        // birdeye returns dates like 'Aug 13, 2020' but only accepts dates formatted as yyyy-MM-dd HH:mm:ss
+        // if the created date is set, clear it so that we don't have to fix it, which will leave it at the original value
+        if (business.getCreatedDate() != null)
+            business = business.toBuilder().createdDate(null).build();
+
+        Request request = new RequestBuilder("PUT")
+                .setUrl(baseUrl + "/v1/business/" + id)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .addQueryParam("api_key", apiKey)
+                .setBody(writeAsJson(business))
+                .build();
+        return http.execute(request)
+                .ignoreElement().toFlowable();
+    }
+
     private String writeAsJson(Object obj) {
         try {
             return objectMapper.writeValueAsString(obj);
