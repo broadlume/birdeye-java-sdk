@@ -48,4 +48,6 @@ public class EnumUtils {
             throw new IllegalArgumentException("Invalid enum value " + value);
         return result;
     }
+
+    private EnumUtils() { }
 }
