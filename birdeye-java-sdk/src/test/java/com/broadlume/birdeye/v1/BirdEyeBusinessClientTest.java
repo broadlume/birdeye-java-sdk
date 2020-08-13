@@ -22,12 +22,14 @@ package com.broadlume.birdeye.v1;
 import com.broadlume.birdeye.internal.http.HttpClient;
 import com.broadlume.birdeye.v1.model.AggregationOption;
 import com.broadlume.birdeye.v1.model.Business;
+import com.broadlume.birdeye.v1.model.ChildBusiness;
 import com.broadlume.birdeye.v1.model.CreateBusinessRequest;
 import com.broadlume.birdeye.v1.model.CreateBusinessResponse;
 import com.broadlume.birdeye.v1.model.SocialProfileUrls;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.observers.TestObserver;
 import org.asynchttpclient.Response;
@@ -151,6 +153,27 @@ public class BirdEyeBusinessClientTest {
 
         Completable.fromPublisher(client.delete(789))
                 .test().await().assertComplete();
+        probe.assertEmpty();
+    }
+
+    @Test
+    public void getChildrenTest() throws InterruptedException {
+        ChildBusiness b1 = ChildBusiness.builder().name("test-business").status("demo").createdOn("today")
+                .type("Business").build();
+        ChildBusiness b2 = ChildBusiness.builder().name("test-business2").status("demo").createdOn("tomorrow")
+                .type("Business").childCount(40).build();
+
+        TestObserver<Void> probe = TestObserver.create();
+        when(httpClient.execute(argThat(arg ->
+                        arg != null &&
+                                arg.getUrl().equals("https://test.url/v1/business/child/all?pid=567&api_key=abcd1234") &&
+                                arg.getMethod().equals("GET") &&
+                                arg.getHeaders().containsValue("Accept", "application/json", true)),
+                eq(ChildBusiness[].class)))
+                .thenReturn(Single.just(new ChildBusiness[] { b1, b2 }).doOnSubscribe(d -> probe.onSubscribe(d)));
+
+        Flowable.fromPublisher(client.getChildren(567))
+                .test().await().assertResult(b1, b2);
         probe.assertEmpty();
     }
 }
