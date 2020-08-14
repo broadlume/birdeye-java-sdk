@@ -21,10 +21,12 @@ package com.broadlume.birdeye.v1;
 
 import com.broadlume.birdeye.internal.http.HttpClient;
 import com.broadlume.birdeye.v1.model.Business;
+import com.broadlume.birdeye.v1.model.ChildBusiness;
 import com.broadlume.birdeye.v1.model.CreateBusinessRequest;
 import com.broadlume.birdeye.v1.model.CreateBusinessResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.reactivex.rxjava3.core.Flowable;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.reactivestreams.Publisher;
@@ -118,6 +120,22 @@ public class BirdEyeBusinessClient {
                 .build();
         return http.execute(request)
                 .ignoreElement().toFlowable();
+    }
+
+    /**
+     * Retrieve all child businesses under a parent business
+     * @param parentId the parent business ID
+     * @return a Publisher that emits each child business
+     */
+    public Publisher<ChildBusiness> getChildren(long parentId) {
+        Request request = new RequestBuilder("GET")
+                .setUrl(baseUrl + "/v1/business/child/all")
+                .addHeader("Accept", "application/json")
+                .addQueryParam("pid", String.valueOf(parentId))
+                .addQueryParam("api_key", apiKey)
+                .build();
+        return http.execute(request, ChildBusiness[].class)
+                .flatMapPublisher(businesses -> Flowable.fromArray(businesses));
     }
 
     private String writeAsJson(Object obj) {
