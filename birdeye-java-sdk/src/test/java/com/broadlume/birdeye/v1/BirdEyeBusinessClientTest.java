@@ -27,8 +27,10 @@ import com.broadlume.birdeye.v1.model.CreateBusinessResponse;
 import com.broadlume.birdeye.v1.model.SocialProfileUrls;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.observers.TestObserver;
+import org.asynchttpclient.Response;
 import org.junit.Test;
 
 import static org.mockito.ArgumentMatchers.argThat;
@@ -83,6 +85,72 @@ public class BirdEyeBusinessClientTest {
 
         Single.fromPublisher(client.create(resellerId, "test@email.com", request))
                 .test().await().assertResult(response);
+        probe.assertEmpty();
+    }
+
+    @Test
+    public void updateTest() throws JsonProcessingException, InterruptedException {
+        Business business = Business.builder().name("test-business").coverImageUrl("").isSEOEnabled("true")
+                .widgetLabel("").widgetBGColor("").socialProfileURLs(SocialProfileUrls.builder().build())
+                .status("demo").type("Business").baseUrl("www").build();
+        Response response = mock(Response.class);
+
+        when(objectMapper.writeValueAsString(business)).thenReturn("update body");
+        TestObserver<Void> probe = TestObserver.create();
+        when(httpClient.execute(argThat(arg ->
+                        arg != null &&
+                                arg.getUrl().equals("https://test.url/v1/business/789?api_key=abcd1234") &&
+                                arg.getMethod().equals("PUT") &&
+                                arg.getHeaders().containsValue("Accept", "application/json", true) &&
+                                arg.getHeaders().containsValue("Content-Type", "application/json", true) &&
+                                "update body".equals(arg.getStringData()))))
+                .thenReturn(Single.just(response).doOnSubscribe(d -> probe.onSubscribe(d)));
+
+        Completable.fromPublisher(client.update(789, business))
+                .test().await().assertComplete();
+        probe.assertEmpty();
+    }
+
+    /**
+     * Should clear out the created date field if it is set
+     */
+    @Test
+    public void updateClearCreatedDateTest() throws JsonProcessingException, InterruptedException {
+        Business business = Business.builder().name("test-business").coverImageUrl("").isSEOEnabled("true")
+                .widgetLabel("").widgetBGColor("").socialProfileURLs(SocialProfileUrls.builder().build())
+                .status("demo").type("Business").baseUrl("www").createdDate("abc").build();
+        Response response = mock(Response.class);
+
+        when(objectMapper.writeValueAsString(business.toBuilder().createdDate(null).build())).thenReturn("update body");
+        TestObserver<Void> probe = TestObserver.create();
+        when(httpClient.execute(argThat(arg ->
+                arg != null &&
+                        arg.getUrl().equals("https://test.url/v1/business/789?api_key=abcd1234") &&
+                        arg.getMethod().equals("PUT") &&
+                        arg.getHeaders().containsValue("Accept", "application/json", true) &&
+                        arg.getHeaders().containsValue("Content-Type", "application/json", true) &&
+                        "update body".equals(arg.getStringData()))))
+                .thenReturn(Single.just(response).doOnSubscribe(d -> probe.onSubscribe(d)));
+
+        Completable.fromPublisher(client.update(789, business))
+                .test().await().assertComplete();
+        probe.assertEmpty();
+    }
+
+    @Test
+    public void deleteTest() throws InterruptedException {
+        Response response = mock(Response.class);
+
+        TestObserver<Void> probe = TestObserver.create();
+        when(httpClient.execute(argThat(arg ->
+                arg != null &&
+                        arg.getUrl().equals("https://test.url/v1/business/789?api_key=abcd1234") &&
+                        arg.getMethod().equals("DELETE") &&
+                        arg.getHeaders().containsValue("Accept", "application/json", true))))
+                .thenReturn(Single.just(response).doOnSubscribe(d -> probe.onSubscribe(d)));
+
+        Completable.fromPublisher(client.delete(789))
+                .test().await().assertComplete();
         probe.assertEmpty();
     }
 }
