@@ -17,37 +17,39 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package com.broadlume.birdeye.internal.utils;
+package com.broadlume.birdeye.v1.model;
 
-import java.util.function.Function;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Builder;
+import lombok.Value;
 
-/**
- * Utility functions for enums
- */
-public class EnumUtils {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-    /**
-     * Get an enum instance from the enum value
-     * @param value the value to match
-     * @param function a function to get a value from an enum
-     * @param enums all enums to check against
-     * @param <T> the enum type
-     * @param <R> the value type of the enum
-     * @return the matching enum
-     * @throws IllegalArgumentException if no enum matches the value
-     */
-    public static <T, R> T enumFromValue(R value, Function<T, R> function, T[] enums) {
-        T result = null;
-        for (T t : enums) {
-            if (function.apply(t).equals(value)) {
-                result = t;
-                break;
-            }
-        }
-        if (result == null)
-            throw new IllegalArgumentException("Invalid enum value " + value);
-        return result;
+@Value @Builder(toBuilder = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonDeserialize(builder = CreateBusinessRequest.CreateBusinessRequestBuilder.class)
+public class CreateBusinessRequest {
+    
+    @Nonnull
+    String businessName;
+    @Nonnull
+    String zip;
+    @Nullable
+    String phone;
+    @Nullable
+    String type;
+    @Nullable
+    @JsonProperty("aggrOptions")
+    AggregationOption aggregationOptions;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class CreateBusinessRequestBuilder {
+
     }
-
-    private EnumUtils() { }
 }
