@@ -28,4 +28,4 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.SONATYPE_USER }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./mvnw install -P release -DskipTests -Dspotbugs.skip=true
+        run: ./mvnw deploy -P release -DskipTests -Dspotbugs.skip=true
