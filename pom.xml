@@ -26,12 +26,12 @@
 
     <groupId>com.broadlume</groupId>
     <artifactId>birdeye-java-sdk-parent</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
     <packaging>pom</packaging>
 
     <name>BirdEye Java SDK parent</name>
     <description>Parent of the BirdEye Java SDK</description>
-    <url>https://github.com/adHawk/birdeye-java-sdk</url>
+    <url>https://github.com/broadlume/birdeye-java-sdk</url>
 
     <modules>
         <module>birdeye-java-sdk</module>
@@ -60,9 +60,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/adHawk/birdeye-java-sdk.git</connection>
-        <developerConnection>scm:git:ssh://github.com:adHawk/birdeye-java-sdk.git</developerConnection>
-        <url>http://github.com/adHawk/birdeye-java-sdk</url>
+        <connection>scm:git:git://github.com/broadlume/birdeye-java-sdk.git</connection>
+        <developerConnection>scm:git:ssh://github.com:broadlume/birdeye-java-sdk.git</developerConnection>
+        <url>http://github.com/broadlume/birdeye-java-sdk</url>
     </scm>
 
     <distributionManagement>
