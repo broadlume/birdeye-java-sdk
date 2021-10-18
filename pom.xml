@@ -250,6 +250,9 @@
                             <goal>check</goal>
                         </goals>
                         <phase>verify</phase>
+                        <configuration>
+                            <excludeFilterFile>${project.basedir}/../spotbugs-exclude.xml</excludeFilterFile>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
